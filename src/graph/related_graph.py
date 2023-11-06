@@ -1,4 +1,4 @@
-from .node import Node
+from .node import Node, NoneNode
 from .edge import Edge
 
 from typing import List
@@ -6,9 +6,8 @@ from typing import List
 
 class RelatedGraph:
     def __init__(self, node: Node):
-        self.nodes = {node: 1}
+        self.nodes = {node: node.index}
         self.edges = dict()
-        self.count_nodes = 1
 
     def get_nodes(self) -> List[Node]:
         return list(self.nodes.keys())
@@ -18,8 +17,7 @@ class RelatedGraph:
             print("НЕТ УЗЛА ДЛЯ СОЕДИНЕНИЯ")
             return
         if not (node in self.nodes):
-            self.count_nodes += 1
-            self.nodes[node] = self.count_nodes
+            self.nodes[node] = node.index
         self.add_edge(node, node_connect)
 
     def add_edge(self, node1: Node, node2: Node):
@@ -27,7 +25,7 @@ class RelatedGraph:
             print("НЕТ ТАКИХ УЗЛОВ")
             return
         keys_edge = tuple({self.nodes[node1], self.nodes[node2]})
-        if (keys_edge in self.edges):
+        if keys_edge in self.edges:
             print("УЗЕЛ УЖЕ ЕСТЬ")
         self.edges[keys_edge] = Edge({node1, node2})
         node1.add_neighbor(node2)
@@ -44,17 +42,20 @@ class RelatedGraph:
         node1, node2 = edge.get_nodes()
         self.delete_edge_from_nodes(node1, node2)
 
-    def delete_edge_from_nodes(self, node1: Node, node2: Node):
-        # TODO Проверка на существование
+    def delete_edge_from_nodes(self, node1: Node, node2: Node) -> List["RelatedGraph"]:
         key_edge = tuple({self.nodes[node1], self.nodes[node2]})
         self.edges.pop(key_edge)
+
+        node1.neighbors.remove(node2)
+        node2.neighbors.remove(node1)
+
         neighbors_node1 = node1.get_neighbors()
         neighbors_node2 = node2.get_neighbors()
 
         graph1_nodes = []
         graph1_edges_key = set()
-        sub_set = neighbors_node1.intersection(neighbors_node2.union({node2}))
-        if len(sub_set) > 1:
+        sub_set = neighbors_node1.intersection(neighbors_node2)
+        if len(sub_set) > 0:
             return [self]
 
         nodes = neighbors_node1 - sub_set
@@ -74,27 +75,24 @@ class RelatedGraph:
         graph2_edges_key = set(self.edges.keys()) - graph1_edges_key
         graph1 = self.create_related_graph(graph1_edges_key)
         graph2 = self.create_related_graph(graph2_edges_key)
-        return graph1, graph2
-
-        print("graph1")
-        for key in graph1_edges_key:
-            ns2 = self.edges[key].get_nodes()
-            print(ns2[0], "---", ns2[1])
-
-        print("graph2")
-        for key in graph2_edges_key:
-            ns2 = self.edges[key].get_nodes()
-            print(ns2[0], "---", ns2[1])
+        return [graph1, graph2]
 
     def create_related_graph(self, edges_key) -> "RelatedGraph":
-
-        key = edges_key.pop()
-        nodes = self.edges[key]
-        r = RelatedGraph(nodes[0])
-        r.add_node(nodes[1], nodes[0])
+        none_node = NoneNode()
+        r = RelatedGraph(none_node)
 
         for key in edges_key:
-            nodes = self.edges[key].get_nodes()
-            print(nodes[0], "---", nodes[1])
+            r.edges[key] = self.edges[key]
 
+        nodes = set()
+        for key in edges_key:
+            n1, n2 = self.edges[key].get_nodes()
+            nodes.add(n1)
+            nodes.add(n2)
+
+        for node in nodes:
+            r.nodes[node] = node.index
+
+        r.nodes.pop(none_node)
         return r
+
