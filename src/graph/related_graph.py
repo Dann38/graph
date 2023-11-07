@@ -96,3 +96,11 @@ class RelatedGraph:
         r.nodes.pop(none_node)
         return r
 
+    def add_related_graph(self, other_related_graph: "RelatedGraph", this_node: Node, other_node):
+        for node in other_related_graph.get_nodes():
+            self.nodes[node] = node.index
+
+        for key, edge in other_related_graph.edges.items():
+            self.edges[key] = edge
+
+        self.add_edge(other_node, this_node)
