@@ -1,9 +1,10 @@
 from graph.related_graph import RelatedGraph
 import matplotlib.pyplot as plt
-
 from graph.node import Node
-color = ["g", "y", "k", "r"]
 from graph.graph import Graph
+
+color = ["g", "y", "k", "r"]
+
 
 graph = Graph()
 node1 = graph.add_node(1, 3)

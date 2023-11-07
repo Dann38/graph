@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 #     requirements = file.read().splitlines()
 
 PACKAGE_DIR = {"": "src"}
-PACKAGES = setuptools.find_packages(where="")
+PACKAGES = setuptools.find_packages(where="src")
 setuptools.setup(
     name="graph",
     version="0.0.1",

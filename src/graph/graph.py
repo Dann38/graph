@@ -26,7 +26,7 @@ class Graph:
     def get_related_graph_from_index_node(self, index_node: int) -> RelatedGraph:
         return self.nodes_in_graphs[index_node]
 
-    def add_node(self, x, y) -> int:
+    def add_node(self, x: float, y: float) -> int:
         self.id_cursor += 1
         node = Node(x, y, self.id_cursor)
         self.nodes[self.id_cursor] = node
