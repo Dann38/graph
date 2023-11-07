@@ -1,6 +1,7 @@
 from .node import Node
 from typing import Tuple, List, Set
 
+
 class Edge:
     def __init__(self, nodes: Set[Node]):
         self.nodes = nodes
