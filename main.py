@@ -18,7 +18,7 @@ r1.add_node(node3, node2)
 r1.add_node(node4, node3)
 r1.add_node(node5, node4)
 r1.add_node(node6, node5)
-r1.add_edge(node3, node5)
+# r1.add_edge(node3, node5)
 
 list_r = r1.delete_edge_from_nodes(node3, node4)
 
